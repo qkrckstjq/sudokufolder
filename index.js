@@ -220,7 +220,7 @@ async function dfsbacktracking(board,stack, isBack = false, slow = false, first 
             time-=100;
         } else if (time > 10) {
             time-=10;
-        } else if (time > 1) {
+        } else if (time >= 1) {
             time-=1;
         }
     }, 400);
