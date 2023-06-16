@@ -15,6 +15,8 @@ for(let i = 0; i < 9; i++){
     table.appendChild(tr);
 }
 
+let InputMemo = {};
+let over = 81;
 let life = 10;
 let x = 0;
 let y = 0;
@@ -35,9 +37,8 @@ function checkX (value, x, y){
         if(x != i){
             let nearValue = document.getElementsByTagName('tr')[y].childNodes[i].childNodes[0].value
             if(nearValue != '' && nearValue == value) {
-                // console.log('checkX is false')
-                return false;
-            };
+                return false
+            }
         }
     }
     return true
@@ -48,7 +49,6 @@ function checkY (value, x, y){
         if(y != i){
             let nearValue = document.getElementsByTagName('tr')[i].childNodes[x].childNodes[0].value
             if(nearValue == value && nearValue !== '') {
-                // console.log('checkY is false')
                 return false
             }
         }
@@ -80,13 +80,12 @@ function checkSec (value,x,y) {// 5 x = 6, y = 4
                 if(x != j && y != i) {
                     let nearValue = document.getElementsByTagName('tr')[i].childNodes[j].childNodes[0].value
                     if(nearValue == value && nearValue !== ''){
-                        // console.log('checkSection is false')
                         return false
                     }
                 }
             }
         }
-        return true
+        return true;
 }
 
 function makeran () {
@@ -101,14 +100,22 @@ function makesudoku () {
         for(let i = 0; i < 3; i++){
             make:while(true) {
                 let [y,x] = makeran();
-                y = 0;
                 let value = Math.floor(Math.random()*10)
                 value == 0 ? value = 1 : undefined;
                 value == 10 ? value = 9 : undefined;
-                if(checkX(value,x,y) && checkY(value,x,y) && checkSec(value,x,y)) {
-                    document.getElementsByTagName('tr')[y].childNodes[x].childNodes[0].value = value;
-                    sudoku[y][x] = value;
-                    break make;
+                let duplicate = 0;
+                if(document.getElementsByTagName('tr')[0].childNodes[x].childNodes[0].value == ''){
+                    for(let j = 0; j < 9; j++){
+                        if(document.getElementsByTagName('tr')[0].childNodes[j].childNodes[0].value != '' && document.getElementsByTagName('tr')[0].childNodes[j].childNodes[0].value == value){
+                            duplicate = 1;
+                            break;
+                        }
+                    }
+                    if(!duplicate) {
+                        document.getElementsByTagName('tr')[0].childNodes[x].childNodes[0].value = value;
+                        sudoku[0][x] = value;
+                        break make
+                    }                    
                 }
             }
         }
@@ -180,14 +187,14 @@ function findpossiblevalue(board, y,x, num=1){
     return result !== 0 ? result : 0;
 }
 
-function delay(){
+function delay(time){
     return new Promise(resolve => setTimeout(() => {
         return resolve();
     }, time))
 }
 
-async function backtracking(board,stack, isBack = false, slow = false, first = true) {
-    // count++
+//dfs 깊이우선탐색으로 구현
+async function dfsbacktracking(board,stack, isBack = false, slow = false, first = true) {
     // let [y,x] = findemptyYX(board);
     // if(y === false && x === false) return true //빈 공간이 더 이상 없음 === 다 채우기 성공
     // let lastNum = stack[stack.length-1];
@@ -197,23 +204,29 @@ async function backtracking(board,stack, isBack = false, slow = false, first = t
     //     x == 0 ? (y--,x=8) : x--;
     //     document.getElementsByTagName('tr')[y].childNodes[x].childNodes[0].value = '';
     //     board[y][x] = 0;
-    //     return backtracking(board, stack, true);
+    //     return dfsbacktracking(board, stack, true);
     // } else {
     //     board[y][x] = possibleNum;
     //     document.getElementsByTagName('tr')[y].childNodes[x].childNodes[0].value = possibleNum;
     //     stack.push(possibleNum);
         
-    //     return backtracking(board,stack);
+    //     return dfsbacktracking(board,stack);
     // }
     /*---------위에는 재귀로 풀었음 콜스택 실행 환경이 안 좋음 ----------*/
 
     let time = 1000
     setInterval(() => {
-        time != 0 ? time-=100 : time = 0;
-    }, 1000);
+        if(time > 100) {
+            time-=100;
+        } else if (time > 10) {
+            time-=10;
+        } else if (time > 1) {
+            time-=1;
+        }
+    }, 400);
 
     while(1){
-        count++
+        console.log(`time:${time}, slow의 상태:${slow}`)
         let [y,x] = findemptyYX(board);
         if(y === false && x === false) return true;
         let lastNum = stack[stack.length-1];
@@ -221,6 +234,7 @@ async function backtracking(board,stack, isBack = false, slow = false, first = t
             if(possibleNum == 0) {
                 if(slow===true) {
                     await delay(time)
+                    time == 0 ? slow = false : undefined;
                 }
                 if(x === 0&&y === 0) return false;
                 if(first === false) {
@@ -243,6 +257,7 @@ async function backtracking(board,stack, isBack = false, slow = false, first = t
             } else {
                 if(slow===true) {
                     await delay(time)
+                    time == 0 ? slow = false : undefined;
                 }
                 board[y][x] = possibleNum;
                 document.getElementsByTagName('tr')[y].childNodes[x].childNodes[0].value = possibleNum;
@@ -250,6 +265,41 @@ async function backtracking(board,stack, isBack = false, slow = false, first = t
                 isBack=false;
             }
     }
+}
+
+//bfs 너비우선탐색으로 구현 하지만 경우의 수가 너무 많음 한번 검색할때 마다 배열을 계속 복사해서 넘겨줘야 해서 공간복잡도, 시간복잡도 모두 dfs에 비해 떨어짐
+//스도쿠에서는 bfs가 효율적이지 않음
+function bfsbacktracking(board, queue,isBack = false, slow = false, first = true) {
+    /*
+    queue.push(board);
+    while(queue.length!==0){
+        let received = queue.shift();
+        let [y,x] = findemptyYX(received);
+        let possibleNum = 0;
+        if(y !== false && x !== false) {
+            while(1) {
+                possibleNum = findpossiblevalue(received,y,x,possibleNum+1)
+                if(possibleNum !== 0){
+                    let copy = [...received.map(item=>[...item])];
+                    copy[y][x] = possibleNum;
+                    queue.push(copy);
+                } else {
+                    break;
+                }
+            }
+        } else if (y === false && x === false){
+            break;
+        }
+        if(q == 9999){
+            let copy = [...received.map(item=>[...item])];
+            for(let i = 0; i < 9; i++){
+                for(let j = 0; j < 9; j++){
+                    document.getElementsByTagName('tr')[i].childNodes[j].childNodes[0].value = copy[i][j];
+                }
+            }
+        }
+    }
+    */
 }
 
 function setEnv (num = 61,isBack = false, slow = false, first = true) {
@@ -264,7 +314,7 @@ function setEnv (num = 61,isBack = false, slow = false, first = true) {
             }
         }
         makesudoku();
-        if(backtracking(sudoku,[],isBack = false, slow = false, first = true)) {
+        if(dfsbacktracking(sudoku,[],isBack = false, slow = false, first = true)) {
             break;
         } 
     }
@@ -284,7 +334,7 @@ function setEnv (num = 61,isBack = false, slow = false, first = true) {
 }
 
 window.addEventListener('DOMContentLoaded',function(){
-    setEnv(num=61,first=true);
+    setEnv(61,false,false,true);
     // makesudoku()
 })
 
@@ -293,19 +343,42 @@ document.addEventListener('input',function (e){
     (e.target.value == 0 || e.target.value == 10) ? e.target.value = '' : undefined;
     x = parseInt(e.target.className[1])
     y = parseInt(e.target.className[3])
-    if(!checkX(e.target.value,x,y) || !checkY(e.target.value,x,y) || !checkSec(e.target.value,x,y)) {
-        e.target.classList.add('red')
-        e.target.classList.remove('blue')
-        sudoku[y][x] = 0;
-    } else {
-        e.target.classList.remove('red')
-        e.target.classList.remove('blue')
-        sudoku[y][x] = parseInt(e.target.value);
+    for(let i = 0; i < 9; i++){
+        for(let j = 0; j < 9; j++){
+            let target = document.getElementsByTagName('tr')[i].childNodes[j].childNodes[0].value;
+            if(document.getElementsByTagName('tr')[i].childNodes[j].childNodes[0].value == '') {
+                target = 0;
+            }
+            if(!checkX(target,j,i) || !checkY(target,j,i) || !checkSec(target,j,i)) {
+                if(document.getElementsByTagName('tr')[i].childNodes[j].childNodes[0].classList.contains('blue')){
+                    document.getElementsByTagName('tr')[i].childNodes[j].childNodes[0].classList.add('blink');
+                } else {
+                    document.getElementsByTagName('tr')[i].childNodes[j].childNodes[0].classList.add('red');
+                    document.getElementsByTagName('tr')[i].childNodes[j].childNodes[0].classList.add('blink');
+                }
+            } else {
+                document.getElementsByTagName('tr')[i].childNodes[j].childNodes[0].classList.remove('red');
+                    document.getElementsByTagName('tr')[i].childNodes[j].childNodes[0].classList.remove('blink');
+            }
+        }
     }
 })
 
-document.querySelector('.btn__show').addEventListener('click',function (){
-    backtracking(sudoku,[], false, true, false) ? console.log(count) : undefined;
+document.querySelector('.btn__show__dfs').addEventListener('click',function (){
+    let CantSolve = false;
+    findred : for(let i = 0; i < 9; i++){
+        for(let j = 0; j < 9; j++){
+            if(document.getElementsByTagName('tr')[i].childNodes[j].childNodes[0].classList.contains('red')){
+                CantSolve = true;
+                break findred;
+            }
+        }
+    }
+    if(CantSolve){
+        alert('현재 상황에서는 풀 수 없음');
+    } else {
+        dfsbacktracking(sudoku,[], false, true, false);
+    }
 })
 
 document.querySelector('.btn__refresh').addEventListener('click',function(){
@@ -323,5 +396,6 @@ document.addEventListener('click',function(e){
         : tag==='hard__mode'
         ? (life=3,76) : undefined;
         setEnv(show__num);
+        console.log(`life = ${life}, showNum = ${81-show__num}`)
     }
 })
