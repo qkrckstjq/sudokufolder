@@ -27,6 +27,7 @@ table input {
     font-size:35px;
     border:0px;
     outline: none;
+    pointer-events: none;
 }
 
 td {
