@@ -1,4 +1,5 @@
 const table = document.getElementsByTagName('table')[0];
+const tds = document.getElementsByTagName('td')
 easy = 41
 normal = 51
 hard = 61
@@ -61,6 +62,27 @@ function checkY (value, x, y){
         }
     }
     return true
+}
+
+function getSection(x, y) {
+    return x>=0&&y>=0&&x<=2&&y<=2?//section1  //섹션검사
+            [0,0,2,2]:
+            x>=3&&y>=0&&x<=5&&y<=2?//section2
+            [3,0,5,2]:
+            x>=6&&y>=0&&x<=8&&y<=2?//section3
+            [6,0,8,2]:
+            x>=0&&y>=3&&x<=2&&y<=5?//section4
+            [0,3,2,5]:
+            x>=3&&y>=3&&x<=5&&y<=5?//section5
+            [3,3,5,5]:
+            x>=6&&y>=3&&x<=8&&y<=5?//section6
+            [6,3,8,5]:
+            x>=0&&y>=6&&x<=2&&y<=8?//section7
+            [0,6,2,8]:
+            x>=3&&y>=6&&x<=5&&y<=8?//section8
+            [3,6,5,8]:
+            x>=6&&y>=6&&x<=8&&y<=8?//section9
+            [6,6,8,8]:undefined;
 }
 
 function checkSec (value,x,y) {// 5 x = 6, y = 4
@@ -344,6 +366,44 @@ window.addEventListener('DOMContentLoaded',function(){
     setEnv(easy,false,false,true);
     // makesudoku()
 })
+
+// document.getElementsByTagName('td').addEventListener('click', function(e) {
+//     console.log('aw')
+// })
+
+window.addEventListener('click', function (e) {
+    if (e.target.tagName == 'BODY') {
+        for(let j = 0; j < 9 ; j++) {
+            for(let k = 0; k < 9; k++) {
+                document.getElementsByTagName('tr')[j].childNodes[k].childNodes[0].classList.remove('lightblue')
+            }
+        }
+    }
+})
+
+
+for(let i = 0; i < tds.length; i++) {
+    document.getElementsByTagName('td')[i].addEventListener('click', function (e) {
+        for(let j = 0; j < 9 ; j++) {
+            for(let k = 0; k < 9; k++) {
+                document.getElementsByTagName('tr')[j].childNodes[k].childNodes[0].classList.remove('lightblue')
+            }
+        }
+        x = parseInt(e.target.className[1])
+        y = parseInt(e.target.className[3])
+        section = getSection(x, y)
+        for(let j = 0; j < 9; j++) {
+            document.getElementsByTagName('tr')[y].childNodes[j].childNodes[0].classList.add('lightblue')
+            document.getElementsByTagName('tr')[j].childNodes[x].childNodes[0].classList.add('lightblue')
+        }
+        for(let j = section[0]; j <= section[2] ; j++) {
+            for(let k = section[1]; k <= section[3]; k++) {
+                document.getElementsByTagName('tr')[k].childNodes[j].childNodes[0].classList.add('lightblue')
+            }
+        }
+    })
+}
+
 
 document.addEventListener('input',function (e){
     e.target.value = e.target.value.slice(0,1);

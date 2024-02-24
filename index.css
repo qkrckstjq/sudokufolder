@@ -64,6 +64,10 @@ table tr:nth-child(3n) td{
     background-color: rgb(192, 228, 243);
 }
 
+.lightblue {
+    background-color: lightblue;
+}
+
 .refresh_container {
     position: fixed;
     top:5%;
