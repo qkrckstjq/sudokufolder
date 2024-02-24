@@ -222,6 +222,15 @@ function delay(time){
     }, time))
 }
 
+function cleanUp() {
+    for(let j = 0; j < 9 ; j++) {
+        for(let k = 0; k < 9; k++) {
+            document.getElementsByTagName('tr')[j].childNodes[k].childNodes[0].classList.remove('lightblue')
+            document.getElementsByTagName('tr')[j].childNodes[k].childNodes[0].classList.remove('blink')
+        }
+    }
+}
+
 //dfs 깊이우선탐색으로 구현
 async function dfsbacktracking(board,stack, isBack = false, slow = false, first = true) {
     // let [y,x] = findemptyYX(board);
@@ -373,11 +382,7 @@ window.addEventListener('DOMContentLoaded',function(){
 
 window.addEventListener('click', function (e) {
     if (e.target.tagName == 'BODY') {
-        for(let j = 0; j < 9 ; j++) {
-            for(let k = 0; k < 9; k++) {
-                document.getElementsByTagName('tr')[j].childNodes[k].childNodes[0].classList.remove('lightblue')
-            }
-        }
+        cleanUp()
     }
 })
 
@@ -456,6 +461,7 @@ document.addEventListener('input',function (e){
 document.addEventListener('click',function(e){
     let tag = e.target.className;
     if(tag === 'easy__mode'|| tag === 'nomal__mode' || tag==='hard__mode'){
+        cleanUp()
         let show__num = 
         tag==='easy__mode'
         ? (life=10,easy)

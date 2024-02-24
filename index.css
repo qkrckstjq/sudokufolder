@@ -28,7 +28,7 @@ table input {
     font-size:35px;
     border:0px;
     outline: none;
-    /* pointer-events: none; */
+    pointer-events: none;
 }
 
 tr td:nth-child(1) {
