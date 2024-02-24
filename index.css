@@ -28,7 +28,6 @@ table input {
     font-size:35px;
     border:0px;
     outline: none;
-    pointer-events: none;
 }
 
 tr td:nth-child(1) {
@@ -61,7 +60,7 @@ table tr:nth-child(3n) td{
 }
 
 .blink {
-    background-color: rgb(192, 228, 243);
+    background-color: rgb(255, 228, 243);
 }
 
 .lightblue {
