@@ -78,3 +78,18 @@ table tr:nth-child(3n) td{
     border: 0.1px solid black;
     border-radius: 8px;
 }
+
+.btn__wrapper {
+    margin-top: 40px;
+    display: flex;
+    gap: 10px;
+}
+
+.btn__wrapper button{
+    font-size:3rem;
+    padding:0 10px 0 10px;
+}
+
+.delete {
+    font-size:2rem !important;
+}
