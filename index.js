@@ -15,6 +15,10 @@ for(let i = 0; i < 9; i++){
     table.appendChild(tr);
 }
 
+// for(let i = 1; i <= 2; i++){
+//     document.getElementsByTagName('tr')[(i*3)-1].style.border = '5px solid black';
+// }
+
 let InputMemo = {};
 let over = 81;
 let life = 10;
@@ -343,6 +347,7 @@ document.addEventListener('input',function (e){
     (e.target.value == 0 || e.target.value == 10) ? e.target.value = '' : undefined;
     x = parseInt(e.target.className[1])
     y = parseInt(e.target.className[3])
+    sudoku[y][x] = parseInt(e.target.value);
     for(let i = 0; i < 9; i++){
         for(let j = 0; j < 9; j++){
             let target = document.getElementsByTagName('tr')[i].childNodes[j].childNodes[0].value;
@@ -399,3 +404,5 @@ document.addEventListener('click',function(e){
         console.log(`life = ${life}, showNum = ${81-show__num}`)
     }
 })
+
+// slalAnimObj.esp
