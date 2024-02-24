@@ -31,10 +31,26 @@ table input {
     /* pointer-events: none; */
 }
 
+tr td:nth-child(1) {
+    border-left:2px solid black;
+}
+
+tr td:nth-child(3n) {
+    border-right:2px solid black;
+}
+
 td {
     border:1px solid black;
 }
 
+
+table tr:nth-child(1) td{
+    border-top:2px solid black;
+}
+
+table tr:nth-child(3n) td{
+    border-bottom:2px solid black;
+}
 
 .red {
     color:red

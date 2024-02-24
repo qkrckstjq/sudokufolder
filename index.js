@@ -1,4 +1,7 @@
 const table = document.getElementsByTagName('table')[0];
+easy = 41
+normal = 51
+hard = 61
 
 for(let i = 0; i < 9; i++){
     const tr = document.createElement('tr');
@@ -338,7 +341,7 @@ function setEnv (num = 61,isBack = false, slow = false, first = true) {
 }
 
 window.addEventListener('DOMContentLoaded',function(){
-    setEnv(61,false,false,true);
+    setEnv(easy,false,false,true);
     // makesudoku()
 })
 
@@ -369,37 +372,37 @@ document.addEventListener('input',function (e){
     }
 })
 
-document.querySelector('.btn__show__dfs').addEventListener('click',function (){
-    let CantSolve = false;
-    findred : for(let i = 0; i < 9; i++){
-        for(let j = 0; j < 9; j++){
-            if(document.getElementsByTagName('tr')[i].childNodes[j].childNodes[0].classList.contains('red')){
-                CantSolve = true;
-                break findred;
-            }
-        }
-    }
-    if(CantSolve){
-        alert('현재 상황에서는 풀 수 없음');
-    } else {
-        dfsbacktracking(sudoku,[], false, true, false);
-    }
-})
+// document.querySelector('.btn__show__dfs').addEventListener('click',function (){
+//     let CantSolve = false;
+//     findred : for(let i = 0; i < 9; i++){
+//         for(let j = 0; j < 9; j++){
+//             if(document.getElementsByTagName('tr')[i].childNodes[j].childNodes[0].classList.contains('red')){
+//                 CantSolve = true;
+//                 break findred;
+//             }
+//         }
+//     }
+//     if(CantSolve){
+//         alert('현재 상황에서는 풀 수 없음');
+//     } else {
+//         dfsbacktracking(sudoku,[], false, true, false);
+//     }
+// })
 
-document.querySelector('.btn__refresh').addEventListener('click',function(){
-    setEnv();
-})
+// document.querySelector('.btn__refresh').addEventListener('click',function(){
+//     setEnv();
+// })
 
 document.addEventListener('click',function(e){
     let tag = e.target.className;
     if(tag === 'easy__mode'|| tag === 'nomal__mode' || tag==='hard__mode'){
         let show__num = 
         tag==='easy__mode'
-        ? (life=10,61)
+        ? (life=10,easy)
         : tag==='nomal__mode'
-        ? (life=5,71)
+        ? (life=5,normal)
         : tag==='hard__mode'
-        ? (life=3,76) : undefined;
+        ? (life=3,hard) : undefined;
         setEnv(show__num);
         console.log(`life = ${life}, showNum = ${81-show__num}`)
     }
